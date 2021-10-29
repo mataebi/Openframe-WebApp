@@ -9,6 +9,8 @@ dist/app.*.js
 dist/app.*.js.map
 dist/hub.*.js
 dist/hub.*.js.map
+dist/hub.html
+dist/index.html
 
 # Runtime data
 pids
