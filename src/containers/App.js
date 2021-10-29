@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Waypoint } from 'react-waypoint';
 import Modal from 'react-modal';
-import Notifs from '../components/notifications/notifs'
+import Notifs from '../components/notifications/Notifs'
 
 require('normalize.css/normalize.css');
 require('styles/bootstrap-overrides.scss');
