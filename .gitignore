@@ -2,6 +2,14 @@
 logs
 *.log
 
+# Built code
+dist/app.*.css
+dist/app.*.css.map
+dist/app.*.js
+dist/app.*.js.map
+dist/hub.*.js
+dist/hub.*.js.map
+
 # Runtime data
 pids
 *.pid
