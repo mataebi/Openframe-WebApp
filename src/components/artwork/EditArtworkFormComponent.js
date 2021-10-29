@@ -13,7 +13,7 @@ import { find } from 'lodash';
 require('styles/artwork/EditArtworkForm.scss');
 
 const defaultFormatOptions = [
-    { value: 'openframe-image', label: 'Image (jpeg, png)' },
+    { value: 'openframe-image', label: 'Image' },
     { value: 'openframe-website', label: 'Website' },
     { value: 'openframe-glslviewer', label: 'Shader' },
     { value: 'openframe-video', label: 'Video (mp4)' }
