@@ -1,7 +1,7 @@
 import fetchJSON from './fetchJSON';
 
 // This may eventually be moved out of /users
-const modelPrefix = 'users/config';
+const modelPrefix = 'users/cfg';
 
 const config = {
   /**
