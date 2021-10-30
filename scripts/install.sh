@@ -21,6 +21,20 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     [ ! -z "$NAPI_BASE" ] && API_BASE=$NAPI_BASE
     break
   done
+
+  ### Ask for Autoboot
+  while [ 1 ]; do
+    read -p "Do you want to boot the Openframe web server on startup (Y/n): " AUTOBOOT
+    [[ ! "$AUTOBOOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
+    [ -z $AUTOBOOT ] && AUTOBOOT="Y"
+    break
+  done
+
+  if [[ $AUTOBOOT =~ ^[Yy] ]]; then
+    AUTOBOOT="true"
+  else
+    AUTOBOOT="false"
+  fi
 } # get_webapp_config
 
 #----------------------------------------------------------------------------
@@ -87,10 +101,12 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
+  install_dpackage nodejs
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
   install_dpackage curl
+
   get_webapp_config
   install_webapp
   install_config
