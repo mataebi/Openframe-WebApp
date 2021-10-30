@@ -37,7 +37,13 @@ NOASK=$1
   ask "Do you want to remove nodejs?"
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Removing nodejs and npm"
-    sudo apt remove nodejs npm
+    sudo apt remove -y nodejs npm
+  fi
+
+  ask "Do you want to remove the npm cache of user $(id -un)?"
+  if [ "$ANSWER" == "Y" ]; then
+    echo "***** Removing npm cache"
+    rm -rf ~/.npm
   fi
 
   ask "Do you want to stop and uninstall the of-webapp service on this server"
