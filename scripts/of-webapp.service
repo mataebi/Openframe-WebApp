@@ -9,7 +9,7 @@ User=<user>
 PIDFile=/run/ofwebapp.pid
 Environment="DEBUG=express:*"
 WorkingDirectory=<appdir>
-ExecStart=npm start
+ExecStart=/usr/bin/npm run dev
 
 [Install]
 WantedBy=multi-user.target
