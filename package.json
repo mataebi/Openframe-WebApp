@@ -6,7 +6,7 @@
   "main": "",
   "scripts": {
     "dev": "./node_modules/.bin/webpack-dev-server --mode=development --config webpack.dev.js",
-    "build": "./node_modules/.bin/webpack --mode=production --config webpack.prod.js",
+    "build": "./node_modules/.bin/webpack --mode=production --config webpack.dist.js",
     "start": "npm run dev",
     "test": "karma start",
     "test:watch": "karma start --autoWatch=true --singleRun=false",
@@ -15,7 +15,7 @@
     "serve:dist": "node server.js --env=dist",
     "dist": "npm run clean && webpack --mode=production --config webpack.dev.js",
     "lint": "eslint ./src",
-    "copy": "copyfiles -f ./src/index.html ./src/hub.html ./src/favicon.ico ./dist",
+    "copy": "copyfiles -f ./src/index.html ./src/hub.html ./src/images/favicon.ico ./dist",
     "clean": "rimraf dist/*",
     "release:major": "npm version major && git push upstream --follow-tags",
     "release:minor": "npm version minor && git push upstream --follow-tags",
