@@ -24,7 +24,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   ### Ask for Autoboot
   while [ 1 ]; do
-    read -p "Do you want to boot the Openframe web server on startup (Y/n): " AUTOBOOT
+    read -p "Do you want to autostart the Openframe Web Server when booting (Y/n): " AUTOBOOT
     [[ ! "$AUTOBOOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
     [ -z $AUTOBOOT ] && AUTOBOOT="Y"
     break
@@ -36,6 +36,23 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     AUTOBOOT="false"
   fi
 } # get_webapp_config
+
+#----------------------------------------------------------------------------
+ function install_nodejs {
+#----------------------------------------------------------------------------
+# Check if nodejs is already installed and install the current LTS release
+# if this is not the case
+  echo -e "\n***** Installing nodejs and npm"
+  NPMVERS=$(npm --version 2>/dev/null)
+  NODEVERS=$(node --version 2>/dev/null)
+
+  if [ $? -gt 0 ] || [[ ! "$NODEVERS" =~ ^v1[4-9].*$ ]]; then
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo bash -
+    sudo apt-get install -y nodejs
+  else
+    echo nodejs $NODEVERS and npm v$NPMVERS are already installed
+  fi
+} # install_install_nodejs
 
 #----------------------------------------------------------------------------
  function install_dpackage {
@@ -101,11 +118,11 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
-  install_dpackage npm
+  install_dpackage curl
+  install_nodejs
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
-  install_dpackage curl
 
   get_webapp_config
   install_webapp
