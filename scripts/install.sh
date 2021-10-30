@@ -101,7 +101,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
-  install_dpackage nodejs
+  install_dpackage npm
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
