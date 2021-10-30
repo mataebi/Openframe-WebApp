@@ -2,6 +2,19 @@
 
 A responsive front-end web app for Openframe.
 
+## Installation
+
+To install and configure this server run the following command:
+```
+bash <(curl -s https://raw.githubusercontent.com/mataebi/Openframe-WebApp/master/scripts/install.sh)
+```
+After asking you some questions about the setup you would like to use the install script should take care of the rest.
+
+You may uninstall the software by using the uninstall script running the following comand:
+```
+bash <(curl -s https://raw.githubusercontent.com/mataebi/Openframe-WebApp/master/scripts/uninstall.sh)
+```
+
 ### Local Development Setup
 
 Install the dependencies: `npm i`
