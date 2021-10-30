@@ -48,7 +48,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   if [ $? -gt 0 ] || [[ ! "$NODEVERS" =~ ^v1[4-9].*$ ]]; then
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo bash -
-    sudo apt-get install -y nodejs
+    sudo apt install -y nodejs
   else
     echo nodejs $NODEVERS and npm v$NPMVERS are already installed
   fi
@@ -88,8 +88,8 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 # Make sure the webapp configuration is initialized if needed
   echo -e "\n***** Installing initial configuration"
   echo "API_HOST=$API_BASE/v0/" > "$APPDIR/.env"
-  # sed -i "apiBase: 'https://oframe-api.jabr.ch/v0/'," /home/maebi/Openframe-WebApp/src/config/dev.js
-  # sed -i "apiBase: 'https://oframe-api.jabr.ch/v0/'," /home/maebi/Openframe-WebApp/src/config/dist.js
+  sed -i "s|^ *apiBase: .*,$|  apiBase: '$API_BASE/v0/',|" $HOMEDIR/Openframe-WebApp/src/config/dev.js
+  sed -i "s|^ *apiBase: .*,$|  apiBase: '$API_BASE/v0/',|" $HOMEDIR/Openframe-WebApp/src/config/dist.js
 } # install_config
 
 #----------------------------------------------------------------------------
