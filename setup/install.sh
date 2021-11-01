@@ -20,11 +20,12 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     [ ! -z "$NAPI_BASE" ] && API_BASE=$NAPI_BASE
     break
   done
+  DOMAINNAME=$(echo $API_BASE | rev | cut -d'.' -f1-2 | rev)
 
   ### Ask for Autoboot
   while [ 1 ]; do
     read -p "Do you want to autostart the Openframe Web Server when booting (Y/n): " AUTOBOOT
-    AUTOBOOT=$(echo $AUTOBOOT | | tr [A-Z] [a-z])
+    AUTOBOOT=$(echo $AUTOBOOT | tr [A-Z] [a-z])
     [[ ! "$AUTOBOOT" =~ (^ye?s?$)|(^no?$)|(^$) ]] && continue
     [ -z $AUTOBOOT ] && AUTOBOOT="y"
     break
@@ -37,9 +38,9 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   fi
 
   ### Ask for server name & domain
-  FULLNAME="openframe.example.com"
+  FULLNAME="openframe.$DOMAINNAME"
   while [ 1 ]; do
-    read -p "Full server name ($FULLNAME): " NFULLNAME
+    read -p "Full Openframe Web App server name ($FULLNAME): " NFULLNAME
     [[ ! "$NFULLNAME" =~ (^[-a-z0-9]+\.[-a-z0-9]+\.[-a-z0-9\.]+$)|(^$) ]] && continue
     [ ! -z "$NFULLNAME" ] && FULLNAME=$NFULLNAME
     DOMAINNAME=$(echo $FULLNAME | rev | cut -d'.' -f1-2 | rev)
@@ -131,7 +132,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 # Install productive version of the WebApp and the websever config
   cd $HOMEDIR/Openframe-WebApp
   rm -rf /var/www/oframe-webapp
-  [ -d ./dist ] && mv ./dist /var/www/oframe-webapp
+  [ -d ./dist ] && sudo mv ./dist /var/www/oframe-webapp
   if [ $HTTPS == "true" ]; then
     PORTNR=443
     SRCFILE=webapp.example.com-ssl.conf
@@ -140,11 +141,11 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     SRCFILE=webapp.example.com-plain.conf
 
     # Ask for certificate & ssl key
-    SSLCertificateFile /etc/ssl/certs/wildcard.<domainname>.crt
-    SSLCertificateKeyFile /etc/ssl/private/wildcard.<domainname>.key
+    # SSLCertificateFile /etc/ssl/certs/wildcard.<domainname>.crt
+    # SSLCertificateKeyFile /etc/ssl/private/wildcard.<domainname>.key
   fi
   DSTFILE=/etc/apache2/sites-available/$SERVERNAME.$DOMAINNAME.conf
-  cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
+  sudo cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
 
   # Adjust the apache config file
   sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
