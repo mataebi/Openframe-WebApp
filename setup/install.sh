@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # Default Values
 HOMEDIR=$(ls -d ~)
@@ -25,15 +24,58 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   ### Ask for Autoboot
   while [ 1 ]; do
     read -p "Do you want to autostart the Openframe Web Server when booting (Y/n): " AUTOBOOT
-    [[ ! "$AUTOBOOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
-    [ -z $AUTOBOOT ] && AUTOBOOT="Y"
+    AUTOBOOT=$(echo $AUTOBOOT | | tr [A-Z] [a-z])
+    [[ ! "$AUTOBOOT" =~ (^ye?s?$)|(^no?$)|(^$) ]] && continue
+    [ -z $AUTOBOOT ] && AUTOBOOT="y"
     break
   done
 
-  if [[ $AUTOBOOT =~ ^[Yy] ]]; then
+  if [[ $AUTOBOOT =~ ^y ]]; then
     AUTOBOOT="true"
   else
     AUTOBOOT="false"
+  fi
+
+  ### Ask for server name & domain
+  FULLNAME="openframe.example.com"
+  while [ 1 ]; do
+    read -p "Full server name ($FULLNAME): " NFULLNAME
+    [[ ! "$NFULLNAME" =~ (^[-a-z0-9]+\.[-a-z0-9]+\.[-a-z0-9\.]+$)|(^$) ]] && continue
+    [ ! -z "$NFULLNAME" ] && FULLNAME=$NFULLNAME
+    DOMAINNAME=$(echo $FULLNAME | rev | cut -d'.' -f1-2 | rev)
+    SERVERNAME=$(echo $FULLNAME | rev | cut -d'.' -f3- | rev)
+    break
+  done
+
+  ### Ask for http mode
+  while [ 1 ]; do
+    read -p "Do you want to use https / ssl (Y/n): " HTTPS
+    HTTPS=$(echo $HTTPS | tr [A-Z] [a-z])
+    [[ ! "$HTTPS" =~ (^ye?s?$)|(^no?$)|(^$) ]] && continue
+    [ -z $HTTPS ] && HTTPS="y"
+    break
+  done
+
+  if [[ $HTTPS =~ ^y ]]; then
+    HTTPS="true"
+
+    # Ask for the SSL certificate path
+    CERTPATH=/etc/ssl/certs/wildcard.$DOMAINNAME.crt
+    while [ 1 ]; do
+      read -p "Where can the SSL certificate be found ($CERTPATH): " NCERTPATH
+      [ ! -z $NCERTPATH ] && CERTPATH=$NCERTPATH
+      break
+    done
+
+    # Ask for the SSL private key path
+    KEYPATH=/etc/ssl/private/wildcard.$DOMAINNAME.key
+    while [ 1 ]; do
+      read -p "Where can the SSL private key be found ($KEYPATH): " NKEYPATH
+      [ ! -z $NKEYPATH ] && KEYPATH=$NKEYPATH
+      break
+    done
+  else
+    HTTPS="false"
   fi
 } # get_webapp_config
 
@@ -71,15 +113,43 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 } # install_dpackage
 
 #----------------------------------------------------------------------------
- function install_webapp {
+ function build_webapp {
 #----------------------------------------------------------------------------
-# Install the WebApp repository
+# Install the WebApp repository and build the productive version of the WebApp
   echo -e "\n***** Installing Openframe WebApp"
   cd $HOMEDIR/
   git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
   cd Openframe-WebApp
   npm install
   npm audit fix
+  npm run dist
+} # build_webapp
+
+#----------------------------------------------------------------------------
+ function install_webapp {
+#----------------------------------------------------------------------------
+# Install productive version of the WebApp and the websever config
+  cd $HOMEDIR/Openframe-WebApp
+  rm -rf /var/www/oframe-webapp
+  [ -d ./dist ] && mv ./dist /var/www/oframe-webapp
+  if [ $HTTPS == "true" ]; then
+    PORTNR=443
+    SRCFILE=webapp.example.com-ssl.conf
+  else
+    PORTNR=8080
+    SRCFILE=webapp.example.com-plain.conf
+
+    # Ask for certificate & ssl key
+    SSLCertificateFile /etc/ssl/certs/wildcard.<domainname>.crt
+    SSLCertificateKeyFile /etc/ssl/private/wildcard.<domainname>.key
+  fi
+  DSTFILE=/etc/apache2/sites-available/$SERVERNAME.$DOMAINNAME.conf
+  cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
+
+  # Adjust the apache config file
+  sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
+  sudo sed -i "s|<servername>|$SERVERNAME|g" $DSTFILE
+  sudo sed -i "s|<domainname>|$DOMAINNAME|g" $DSTFILE
 } # install_webapp
 
 #----------------------------------------------------------------------------
@@ -119,12 +189,14 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 # main
 #----------------------------------------------------------------------------
   install_dpackage curl
+  install_dpackage apache2
   install_nodejs
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
 
   get_webapp_config
+  build_webapp
   install_webapp
   install_config
   install_service
