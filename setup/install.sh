@@ -150,8 +150,8 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   DSTFILE=/etc/apache2/sites-available/$SERVERNAME.$DOMAINNAME.conf
   sudo cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
   if [ $HTTPS == "true" ]; then
-    sudo sed -i "s|\(.*SSLCertificateFile \).*|\1$CERTPATH|" $DSTFILE
-    sudo sed -i "s|\(.*SSLCertificateKeyFile \).*|\1$KEYPATH|" $DSTFILE
+    sudo sed -i "s|<certpath>|$CERTPATH|g" $DSTFILE
+    sudo sed -i "s|<keypath>|$KEYPATH|g" $DSTFILE
   else
     SRCFILE=webapp.example.com-plain.conf
   fi
@@ -161,7 +161,8 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   sudo sed -i "s|<servername>|$SERVERNAME|g" $DSTFILE
   sudo sed -i "s|<domainname>|$DOMAINNAME|g" $DSTFILE
 
-  sudo /usr/sbin/a2ensite openframe.jabr.ch.conf
+  [ ! -r /etc/apache2/sites-enabled/openframe.jabr.ch.conf ] && sudo /usr/sbin/a2ensite openframe.jabr.ch.conf
+  sudo a2enmod ssl
   sudo service apache2 restart
 } # install_webapp
 
