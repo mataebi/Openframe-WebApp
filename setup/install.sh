@@ -65,7 +65,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     SRCFILE=webapp.example.com-ssl.conf
 
     # Ask for the SSL certificate path
-    CERTPATH=/etc/ssl/certs/wildcard.$DOMAINNAME.crt
+    CERTPATH=/etc/ssl/certs/$FULLNAME.crt
     while [ 1 ]; do
       read -p "Where can the SSL certificate be found ($CERTPATH): " NCERTPATH
       [ ! -z $NCERTPATH ] && CERTPATH=$NCERTPATH
@@ -73,7 +73,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
     done
 
     # Ask for the SSL private key path
-    KEYPATH=/etc/ssl/private/wildcard.$DOMAINNAME.key
+    KEYPATH=/etc/ssl/private/$FULLNAME.key
     while [ 1 ]; do
       read -p "Where can the SSL private key be found ($KEYPATH): " NKEYPATH
       [ ! -z $NKEYPATH ] && KEYPATH=$NKEYPATH
@@ -147,7 +147,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   [ -d /var/www/oframe-webapp ] && sudo rm -rf /var/www/oframe-webapp
   [ -d $HOMEDIR/Openframe-WebApp/dist ] && sudo mv $HOMEDIR/Openframe-WebApp/dist /var/www/oframe-webapp
 
-  DSTFILE=/etc/apache2/sites-available/$SERVERNAME.$DOMAINNAME.conf
+  DSTFILE=/etc/apache2/sites-available/$FULLNAME.conf
   sudo cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
   if [ $HTTPS == "true" ]; then
     sudo sed -i "s|<certpath>|$CERTPATH|g" $DSTFILE
@@ -158,6 +158,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   # Adjust the apache config file
   sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
+  sudo sed -i "s|<fullname>|$FULLNAME|g" $DSTFILE
   sudo sed -i "s|<servername>|$SERVERNAME|g" $DSTFILE
   sudo sed -i "s|<domainname>|$DOMAINNAME|g" $DSTFILE
 
