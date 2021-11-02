@@ -4,7 +4,7 @@ import baseConfig from './base';
 
 let config = {
   appEnv: 'dist',  // feel free to remove the appEnv property here
-  apiBase: 'https://api.openframe.io/v0/',
+  apiBase: process.env.API_HOST,
   crossStorageRules: [
     {
         origin: /localhost:3030$/,

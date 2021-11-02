@@ -175,10 +175,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   echo "Updating $APPDIR/.env"
   echo "API_HOST=$API_BASE/v0/" > "$APPDIR/.env"
-
-  echo "Updating config/dev.js and config/dist.js"
-  sed -i "s|^ *apiBase: .*,$|  apiBase: '$API_BASE/v0/',|" $HOMEDIR/Openframe-WebApp/src/config/dev.js
-  sed -i "s|^ *apiBase: .*,$|  apiBase: '$API_BASE/v0/',|" $HOMEDIR/Openframe-WebApp/src/config/dist.js
 } # install_config
 
 #----------------------------------------------------------------------------
