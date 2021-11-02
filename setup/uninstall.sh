@@ -46,10 +46,10 @@ NOASK=$1
     rm -rf ~/.npm
   fi
 
-  ask "Do you want to stop and uninstall the of-webapp service on this server"
+  ask "Do you want to remove and disable the web service?"
   if [ "$ANSWER" == "Y" ]; then
-    echo "***** Stopping and removing of-webapp service"
-    sudo service of-webapp stop
-    sudo systemctl disable of-webapp
-    sudo rm /lib/systemd/system/of-webapp.service
+    echo "***** Removing and stopping web service"
+    sudo rm -rf oframe-webapp
+    sudo a2dissite $(grep -l oframe-webapp /etc/apache2/sites-enabled/* |rev | cut -d'/' -f1 | rev)
+    sudo service apache2 restart
   fi
