@@ -182,29 +182,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 } # install_config
 
 #----------------------------------------------------------------------------
- function install_service {
-#----------------------------------------------------------------------------
-# Make sure the web app service is properly installed
-  echo -e "\n***** Installing web app service"
-
-  echo "Installing service at /lib/systemd/system/of-webapp.service"
-  local SERVICE_FILE=/usr/lib/systemd/system/of-webapp.service
-  sudo cp -p $HOMEDIR/Openframe-WebApp/setup/of-webapp.service $SERVICE_FILE
-  sudo sed -i "s|<user>|$(id -un)|g" $SERVICE_FILE
-  sudo sed -i "s|<appdir>|$HOMEDIR/Openframe-WebApp|g" $SERVICE_FILE
-  sudo systemctl daemon-reload
-
-  if [ $AUTOBOOT == "true" ]; then
-    echo "Enabling autostart of service"
-    sudo systemctl enable of-webapp.service
-  else
-    echo "Disabling autostart of service"
-    sudo systemctl disable of-webapp.service
-  fi
-  sudo systemctl enable systemd-networkd-wait-online.service
-} # install_service
-
-#----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
   install_dpackage curl
@@ -218,4 +195,3 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   build_webapp
   install_webapp
   install_config
-  install_service
