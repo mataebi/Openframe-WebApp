@@ -134,7 +134,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   echo -e "\n***** Cloning Openframe WebApp"
   cd $HOMEDIR/
   git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
-} # build_webapp
+} # clone_webapp
 
 #----------------------------------------------------------------------------
  function install_config {
@@ -182,6 +182,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   sudo a2enmod ssl
   sudo service apache2 restart
 } # install_webapp
+
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
@@ -194,6 +195,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
 
+  clone_webapp
   install_config
   build_webapp
   install_webapp
