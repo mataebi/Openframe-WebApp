@@ -106,6 +106,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   if [ $? -gt 0 ] || [[ ! "$NODEVERS" =~ ^v1[4-9].*$ ]]; then
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo bash -
     sudo apt install -y nodejs
+    sudo npm install -g npm
   else
     echo nodejs $NODEVERS and npm v$NPMVERS are already installed
   fi
@@ -188,6 +189,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   install_dpackage git
 
   get_webapp_config
+  install_config
   build_webapp
   install_webapp
-  install_config
