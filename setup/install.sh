@@ -106,7 +106,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   if [ $? -gt 0 ] || [[ ! "$NODEVERS" =~ ^v1[4-9].*$ ]]; then
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo bash -
     sudo apt install -y nodejs
-    sudo npm install -g npm
   else
     echo nodejs $NODEVERS and npm v$NPMVERS are already installed
   fi
@@ -129,13 +128,29 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 } # install_dpackage
 
 #----------------------------------------------------------------------------
- function build_webapp {
+ function clone_webapp {
 #----------------------------------------------------------------------------
-# Install the WebApp repository and build the productive version of the WebApp
-  echo -e "\n***** Installing Openframe WebApp"
+# Clone the WebApp repository
+  echo -e "\n***** Cloning Openframe WebApp"
   cd $HOMEDIR/
   git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
-  cd Openframe-WebApp
+} # build_webapp
+
+#----------------------------------------------------------------------------
+ function install_config {
+#----------------------------------------------------------------------------
+# Make sure the webapp configuration is initialized if needed
+  echo -e "\n***** Installing initial configuration"
+  echo "Updating $APPDIR/.env"
+  echo "API_HOST=$API_BASE/v0/" > "$APPDIR/.env"
+} # install_config
+
+#----------------------------------------------------------------------------
+ function build_webapp {
+#----------------------------------------------------------------------------
+# Build the productive version of the WebApp
+  echo -e "\n***** Installing Openframe WebApp"
+  cd $APPDIR
   npm install
   npm audit fix
   npm run dist
@@ -167,20 +182,11 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   sudo a2enmod ssl
   sudo service apache2 restart
 } # install_webapp
-
-#----------------------------------------------------------------------------
- function install_config {
-#----------------------------------------------------------------------------
-# Make sure the webapp configuration is initialized if needed
-  echo -e "\n***** Installing initial configuration"
-
-  echo "Updating $APPDIR/.env"
-  echo "API_HOST=$API_BASE/v0/" > "$APPDIR/.env"
-} # install_config
-
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
+  get_webapp_config
+
   install_dpackage curl
   install_dpackage apache2
   install_nodejs
@@ -188,7 +194,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   export QT_QPA_PLATFORM=offscreen
   install_dpackage git
 
-  get_webapp_config
   install_config
   build_webapp
   install_webapp
