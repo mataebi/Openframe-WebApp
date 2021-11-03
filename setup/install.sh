@@ -189,6 +189,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   install_dpackage git
 
   get_webapp_config
+  install_config
   build_webapp
   install_webapp
-  install_config
