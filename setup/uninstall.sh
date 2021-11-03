@@ -38,6 +38,7 @@ NOASK=$1
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Removing nodejs and npm"
     sudo apt remove -y nodejs npm
+    [ -d /usr/lib/node_modules/npm/node_modules ] && sudo rm -rf /usr/lib/node_modules/npm/node_modules
   fi
 
   ask "Do you want to remove the npm cache of user $(id -un)?"
@@ -50,6 +51,7 @@ NOASK=$1
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Removing and stopping web service"
     sudo rm -rf oframe-webapp
-    sudo a2dissite $(grep -l oframe-webapp /etc/apache2/sites-enabled/* |rev | cut -d'/' -f1 | rev)
+    WEBAPPSITE=$(grep -l oframe-webapp /etc/apache2/sites-enabled/* | rev | cut -d'/' -f1 | rev)
+    [ ! -z "$WEBAPPSITE" ] && sudo a2dissite "$WEBAPPSITE"
     sudo service apache2 restart
   fi
