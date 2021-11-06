@@ -109,7 +109,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   else
     echo nodejs $NODEVERS and npm v$NPMVERS are already installed
   fi
-} # install_install_nodejs
+} # install_nodejs
 
 #----------------------------------------------------------------------------
  function install_dpackage {
@@ -162,6 +162,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 # Install productive version of the WebApp and the websever config
   [ -d /var/www/oframe-webapp ] && sudo rm -rf /var/www/oframe-webapp
   [ -d $HOMEDIR/Openframe-WebApp/dist ] && sudo mv $HOMEDIR/Openframe-WebApp/dist /var/www/oframe-webapp
+  [ ! -r /var/www/oframe-webapp/stream ] && sudo ln -s /var/www/oframe-webapp/index.html /var/www/oframe-webapp/stream
 
   DSTFILE=/etc/apache2/sites-available/$FULLNAME.conf
   sudo cp -p $HOMEDIR/Openframe-WebApp/setup/$SRCFILE $DSTFILE
