@@ -47,6 +47,12 @@ NOASK=$1
     rm -rf ~/.npm
   fi
 
+  ask "Do you want to remove the node-gyp cache of user $(id -un)?"
+  if [ "$ANSWER" == "Y" ]; then
+    echo "***** Removing node-gyp cache"
+    rm -rf ~/.node-gyp
+  fi
+
   ask "Do you want to remove and disable the web service?"
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Removing and stopping web service"
