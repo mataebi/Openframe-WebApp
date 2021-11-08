@@ -59,15 +59,14 @@ const users = {
    * @param  {String} username
    * @return {Promise}
    */
-  fetchByUsername: function(username, filter = {}) {
+  fetchByUsername: function(username, filter = {}, access_token = null) {
     let defaultFilter = {
       where: {
         username: username
-      },
-      limit: 1
+      }
     };
     let finalFilter = Object.assign({}, defaultFilter, filter);
-    return this.fetch(finalFilter);
+    return fetchJSON(`${modelPrefix}/findOne`, { data: finalFilter, access_token });
   },
 
   searchByUsername: function(input) {

@@ -16,10 +16,11 @@ export default function(username) {
         // On the client, we want that to be an error, so we handle it here.
         //
         // TODO: create an endpoint for user by username that responds with 404 if not found?
-        if (response.length === 0) {
+
+        if (username !== response.username) {
           dispatch(fetchUserFailure('User not found.'));
         } else {
-          dispatch(fetchUserSuccess(response))
+          dispatch(fetchUserSuccess([response]))
         }
       },
 			error => dispatch(fetchUserFailure(error))
