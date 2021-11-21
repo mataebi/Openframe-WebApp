@@ -175,8 +175,6 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   # Adjust the apache config file
   sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
   sudo sed -i "s|<fullname>|$FULLNAME|g" $DSTFILE
-  sudo sed -i "s|<servername>|$SERVERNAME|g" $DSTFILE
-  sudo sed -i "s|<domainname>|$DOMAINNAME|g" $DSTFILE
 
   [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
   sudo a2enmod ssl
