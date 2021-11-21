@@ -178,7 +178,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   sudo sed -i "s|<servername>|$SERVERNAME|g" $DSTFILE
   sudo sed -i "s|<domainname>|$DOMAINNAME|g" $DSTFILE
 
-  [ ! -r /etc/apache2/sites-enabled/openframe.jabr.ch.conf ] && sudo /usr/sbin/a2ensite openframe.jabr.ch.conf
+  [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
   sudo a2enmod ssl
   sudo service apache2 restart
 } # install_webapp
