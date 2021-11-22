@@ -179,6 +179,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 # Build the productive version of the WebApp
   echo -e "\n***** Installing Openframe WebApp"
   cd $APPDIR
+  npm rebuild node-sass
   npm install
   npm audit fix
   npm run dist
@@ -220,6 +221,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   install_dpackage apache2
   install_dpackage git
   install_dpackage python
+  install_dpackage build-essential
   install_nodejs
 
   install_dpackage phantomjs
