@@ -149,13 +149,20 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 } # install_dpackage
 
 #----------------------------------------------------------------------------
- function clone_webapp {
+ function get_webapp {
 #----------------------------------------------------------------------------
-# Clone the WebApp repository
-  echo -e "\n***** Cloning Openframe WebApp"
+# Clone or pull the web app repository
+  echo -e "\n***** Installing Openframe WebApp"
   cd $HOMEDIR/
-  git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
-} # clone_webapp
+  if [ ! -d $APPDIR/.git ]; then
+    echo "Cloning https://github.com/mataebi/Openframe-WebApp.git"
+    git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
+  else
+    echo "Updating from https://github.com/mataebi/Openframe-WebApp.git"
+    cd $APPDIR
+    git pull --depth=1
+  fi
+} # get_webapp
 
 #----------------------------------------------------------------------------
  function install_config {
@@ -211,12 +218,14 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   install_dpackage curl
   install_dpackage apache2
+  install_dpackage git
+  install_dpackage python
   install_nodejs
+
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
-  install_dpackage git
 
-  clone_webapp
+  get_webapp
   install_config
   build_webapp
   install_webapp
