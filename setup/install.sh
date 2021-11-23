@@ -202,7 +202,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   fi
 
   # Adjust the apache config file
-  sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
+  sudo sed -i "s|<port>|$PORTNUM|g" $DSTFILE
   sudo sed -i "s|<fullname>|$FULLNAME|g" $DSTFILE
 
   [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
