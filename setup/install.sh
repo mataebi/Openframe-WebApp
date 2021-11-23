@@ -207,6 +207,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
   sudo a2enmod ssl
+  sudo a2enmod rewrite
   sudo service apache2 restart
 } # install_webapp
 
