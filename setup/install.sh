@@ -149,13 +149,20 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 } # install_dpackage
 
 #----------------------------------------------------------------------------
- function clone_webapp {
+ function get_webapp {
 #----------------------------------------------------------------------------
-# Clone the WebApp repository
-  echo -e "\n***** Cloning Openframe WebApp"
+# Clone or pull the web app repository
+  echo -e "\n***** Installing Openframe WebApp"
   cd $HOMEDIR/
-  git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
-} # clone_webapp
+  if [ ! -d $APPDIR/.git ]; then
+    echo "Cloning https://github.com/mataebi/Openframe-WebApp.git"
+    git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-WebApp.git
+  else
+    echo "Updating from https://github.com/mataebi/Openframe-WebApp.git"
+    cd $APPDIR
+    git pull --depth=1
+  fi
+} # get_webapp
 
 #----------------------------------------------------------------------------
  function install_config {
@@ -174,6 +181,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   cd $APPDIR
   npm install
   npm audit fix
+  npm rebuild node-sass
   npm run dist
 } # build_webapp
 
@@ -194,7 +202,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   fi
 
   # Adjust the apache config file
-  sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
+  sudo sed -i "s|<port>|$PORTNUM|g" $DSTFILE
   sudo sed -i "s|<fullname>|$FULLNAME|g" $DSTFILE
 
   [ -z "$(grep "ServerName 127.0.0.1" /etc/apache2/apache2.conf)" ] && \
@@ -203,6 +211,7 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
 
   sudo a2enmod ssl
+  sudo a2enmod rewrite
   sudo service apache2 restart
 
   [ $? -ne 0 ] && apache2ctl configtest
@@ -217,12 +226,15 @@ APPDIR=$HOMEDIR/Openframe-WebApp
 
   install_dpackage curl
   install_dpackage apache2
+  install_dpackage git
+  install_dpackage python
+  install_dpackage build-essential
   install_nodejs
+
   install_dpackage phantomjs
   export QT_QPA_PLATFORM=offscreen
-  install_dpackage git
 
-  clone_webapp
+  get_webapp
   install_config
   build_webapp
   install_webapp
