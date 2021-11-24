@@ -197,9 +197,15 @@ APPDIR=$HOMEDIR/Openframe-WebApp
   sudo sed -i "s|<port>|$PORTNR|g" $DSTFILE
   sudo sed -i "s|<fullname>|$FULLNAME|g" $DSTFILE
 
+  [ -z "$(grep "ServerName 127.0.0.1" /etc/apache2/apache2.conf)" ] && \
+          echo "ServerName 127.0.0.1" | sudo tee -a /etc/apache2/apache2.conf >/dev/null
+
   [ ! -r /etc/apache2/sites-enabled/$FULLNAME.conf ] && sudo /usr/sbin/a2ensite $FULLNAME.conf
+
   sudo a2enmod ssl
   sudo service apache2 restart
+
+  [ $? -ne 0 ] && apache2ctl configtest
 } # install_webapp
 
 #----------------------------------------------------------------------------
